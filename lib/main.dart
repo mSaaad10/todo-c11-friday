@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
             }
         }
       },
-      initialRoute: AppRoutes.homeRoute,
+      initialRoute: AppRoutes.loginRoute,
     );
   }
 }

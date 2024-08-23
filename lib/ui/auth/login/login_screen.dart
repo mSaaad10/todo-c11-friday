@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:todo_c11_thursday/core/app_routes.dart';
+import 'package:todo_c11_thursday/core/utils/dialog_utils.dart';
 import 'package:todo_c11_thursday/core/utils/email_validation.dart';
 import 'package:todo_c11_thursday/ui/widgets/custom_text_form_field.dart';
 
@@ -11,9 +12,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController = TextEditingController();
+  TextEditingController emailController =
+      TextEditingController(text: 'muhammed@gmail.com');
 
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordController =
+      TextEditingController(text: '123456');
 
   var formKey = GlobalKey<FormState>();
 
@@ -126,13 +129,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
     //login
     try {
+      DialogUtils.showLoadingDialog(context, message: 'plz, wait...');
       final UserCredential credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      print('Loggd user Id : ${credential.user?.uid}');
-      Navigator.pushReplacementNamed(context, AppRoutes.homeRoute);
+      DialogUtils.hideDialog(context);
+      DialogUtils.showMessageDialog(context,
+          message: 'User logged in Successfully',
+          posActionTitle: 'Ok', posAction: () {
+        Navigator.pushReplacementNamed(context, AppRoutes.homeRoute);
+      });
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        print('Wrong email or password');
+      DialogUtils.hideDialog(context);
+      if (e.code == 'user-not-found' ||
+          e.code == 'wrong-password' ||
+          e.code == 'invalid-credential') {
+        DialogUtils.showMessageDialog(
+          context,
+          message: 'Wrong email or password',
+          posActionTitle: 'Try Again',
+        );
       }
     }
   }
