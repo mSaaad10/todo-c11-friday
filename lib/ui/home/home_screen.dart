@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomAppBar(
+        bottomNavigationBar: BottomAppBar(
         notchMargin: 8,
         shape: CircularNotchedRectangle(),
         child: BottomNavigationBar(
@@ -42,19 +42,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 label: 'Tasks'),
             BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.settings,
-                ),
-                label: 'Settings'),
-          ],
+                  icon: Icon(
+                    Icons.settings,
+                  ),
+                  label: 'Settings'),
+            ],
+          ),
         ),
-      ),
-      body: tabs[selectedIndex],
-    );
+        body: tabs[selectedIndex]);
   }
 
-  List<Widget> tabs = [
-    TasksTab(),
-    SettingsTab(),
-  ];
+  var tabs = [TasksTab(), SettingsTab()];
 }
