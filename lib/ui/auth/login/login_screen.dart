@@ -1,10 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:todo_c11_thursday/core/app_routes.dart';
 import 'package:todo_c11_thursday/core/utils/email_validation.dart';
 import 'package:todo_c11_thursday/ui/widgets/custom_text_form_field.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
+
   TextEditingController passwordController = TextEditingController();
 
   var formKey = GlobalKey<FormState>();
@@ -78,9 +86,31 @@ class LoginScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      login();
+                      login(emailController.text, passwordController.text);
                     },
-                    child: Text('Login'))
+                    child: Text('Login')),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don't have account?",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                              context, AppRoutes.registerRoute);
+                        },
+                        child: Text(
+                          'Create Account',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ))
+                  ],
+                )
               ],
             ),
           ),
@@ -89,11 +119,21 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  void login() {
+  void login(String email, String password) async {
     if (formKey.currentState?.validate() == false) {
       return;
     }
 
-    // create account
+    //login
+    try {
+      final UserCredential credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      print('Loggd user Id : ${credential.user?.uid}');
+      Navigator.pushReplacementNamed(context, AppRoutes.homeRoute);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+        print('Wrong email or password');
+      }
+    }
   }
 }
