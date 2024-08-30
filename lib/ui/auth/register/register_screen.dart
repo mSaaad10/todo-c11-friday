@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_c11_thursday/core/app_routes.dart';
 import 'package:todo_c11_thursday/core/utils/dialog_utils.dart';
 import 'package:todo_c11_thursday/core/utils/email_validation.dart';
+import 'package:todo_c11_thursday/providers/app_auth_provider.dart';
 import 'package:todo_c11_thursday/ui/widgets/custom_text_form_field.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -155,7 +157,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      register(emailController.text, passwordController.text);
+                      createAccount(
+                        emailController.text,
+                        passwordController.text,
+                        fullNameController.text,
+                        userNameController.text,
+                      );
                     },
                     child: Text('Register')),
                 Row(
@@ -191,7 +198,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void register(String email, String password) async {
+  void createAccount(
+      String email, String password, String fullName, String userName) async {
+    var authProvider = Provider.of<AppAuthProvider>(context, listen: false);
     if (formKey.currentState?.validate() == false) {
       return;
     }
@@ -200,9 +209,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       DialogUtils.showLoadingDialog(context, message: 'Create Account...');
-      var userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-
+      await authProvider.register(
+          email: email,
+          fullName: fullName,
+          userName: userName,
+          password: password);
       DialogUtils.hideDialog(context);
       DialogUtils.showMessageDialog(context,
           message: 'Registration Successfully',

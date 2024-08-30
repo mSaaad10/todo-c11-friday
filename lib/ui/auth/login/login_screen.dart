@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_c11_thursday/core/app_routes.dart';
 import 'package:todo_c11_thursday/core/utils/dialog_utils.dart';
 import 'package:todo_c11_thursday/core/utils/email_validation.dart';
+import 'package:todo_c11_thursday/providers/app_auth_provider.dart';
 import 'package:todo_c11_thursday/ui/widgets/custom_text_form_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -123,6 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void login(String email, String password) async {
+    var authProvider = Provider.of<AppAuthProvider>(context, listen: false);
     if (formKey.currentState?.validate() == false) {
       return;
     }
@@ -130,8 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
     //login
     try {
       DialogUtils.showLoadingDialog(context, message: 'plz, wait...');
-      final UserCredential credential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+      await authProvider.login(email, password);
       DialogUtils.hideDialog(context);
       DialogUtils.showMessageDialog(context,
           message: 'User logged in Successfully',
