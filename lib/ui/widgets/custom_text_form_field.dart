@@ -22,7 +22,7 @@ class CustomTextFormField extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal),
         controller: controller,
         validator: validator,
         obscureText: isSecureText,
@@ -36,7 +36,7 @@ class CustomTextFormField extends StatelessWidget {
           ),
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(18),
-              borderSide: BorderSide(color: Colors.grey, width: 2)),
+              borderSide: BorderSide(color: Colors.blue, width: 2)),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(18),
               borderSide:
